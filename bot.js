@@ -4,8 +4,7 @@ console.log(date.getHours())
 var fs = require('fs');
 
 
-const redisToken = "redis://h:pa2565d85984f854fdb083158727b752ad192735778ef60f16a1b76f5f0373304@ec2-52-211-79-208.eu-west-1.compute.amazonaws.com:16579"
-var redis = require('redis').createClient(redisToken);
+var redis = require('redis').createClient(process.env.REDIS_URL);
 redis.on('connect', function () {
     console.log('connected');
 });
