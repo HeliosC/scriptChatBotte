@@ -1,12 +1,5 @@
-
 {
-  "name": "scriptchatbott",
-  "description": "Test",
-  "version": "0.0.0",
-  "main": "bot.js",
-  "scripts": {
-    "start": "node bot.js"
-  },
+  "name": "scriptchatbotte",
   "dependencies": {
     "ajax-request": "^1.2.3",
     "connect-redis": "^3.4.1",
@@ -20,4 +13,10 @@
     "tmi.js": "^1.4.2",
     "xmlhttprequest": "^1.8.0"
   },
-}
+  "version": "1.0.0",
+  "main": "bot.js",
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node bot.js"
+  },
