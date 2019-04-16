@@ -1,7 +1,7 @@
 let date = new Date();
 console.log(date.getHours())
 
-var fs = require('fs');
+//var fs = require('fs');
 
 
 var redis = require('redis').createClient(process.env.REDIS_URL);
@@ -28,8 +28,8 @@ for (var jour = 1; jour < 32; jour++) {
     try {
         // fs.statSync('path/to/file');
         console.log('file or directory exists');
-        content = fs.readFileSync(path, 'utf8');
-        contents += content +'\n\n\n\n'
+        //content = fs.readFileSync(path, 'utf8');
+        //contents += content +'\n\n\n\n'
         +'******************************************************************************************************************************************************************************************************************************************\n'
         +'******************************************************************************************************************************************************************************************************************************************\n'
         +'******************************************************************************************************************************************************************************************************************************************\n'
@@ -50,9 +50,9 @@ for (var jour = 1; jour < 32; jour++) {
         redis.exists(chatredis, function (err, reply) {
             if (reply === 1) {
                 // console.log('exists');
-                fs.appendFile(path, '', function (err) {
+                //fs.appendFile(path, '', function (err) {
                     redis.get(chatredis, function (err, reply) {
-                        fs.writeFileSync(path, reply, { mode: 0o755 });
+                        //fs.writeFileSync(path, reply, { mode: 0o755 });
                     });
                     if (err) throw err;
                 // console.log('File is created successfully.');
