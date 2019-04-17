@@ -2,3 +2,4 @@ chatRedis.js
 chatGithub.js
 testHashChat.js
 updateMonthlyChat LOCAL.js
+bot LOCAL.js
