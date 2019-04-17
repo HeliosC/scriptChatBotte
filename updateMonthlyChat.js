@@ -6,23 +6,23 @@
 
 
 
-mode = 2
+mode = parseInt(process.env.mode)
 // 0 = Update monthly chat
 // 1 = Find user's messages
 // 2 = Find a word in the chat 
 
 
 // if mode = 0, set the current month:
-let month0 = '04'
-let year0 = '2019'
+let month0 = process.env.month
+let year0 =  process.env.year
 
 
 // if mode = 1, set the username:
-let username = "pouidesbois"
+let username = process.env.username
 
 
 // if mode = 2, set the word:
-let word = "chatdehi"
+let word = process.env.word
 
 
 
