@@ -96,9 +96,9 @@ if (mode == "word") {
                         }
                         s = element
                     });
-                    if (!/\*{32} Chat du [0-9]{2}\/[0-9]{2}\/[0-9]{4} \*{32}\n/gmi.test(s)) {
-                        str += s
-                    }
+                    // if (!/\*{32} Chat du [0-9]{2}\/[0-9]{2}\/[0-9]{4} \*{32}\n/gmi.test(s)) {
+                    //     str += s
+                    // }
 
                     redisquit()
 
