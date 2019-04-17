@@ -6,7 +6,7 @@
 
 
 
-mode = parseInt(process.env.mode)
+mode = process.env.mode
 // 0 = Update monthly chat
 // 1 = Find user's messages
 // 2 = Find a word in the chat 
@@ -42,7 +42,7 @@ let word = process.env.word
 
 
 
-if (mode == 2) {
+if (mode == "word") {
     var redis = require('redis').createClient(process.env.REDIS_URL);
     redis.on('connect', function () {
         console.log('connected');
@@ -144,7 +144,7 @@ if (mode == 2) {
 
 
 
-if (mode == 1) {
+if (mode == "username") {
     var redis = require('redis').createClient(process.env.REDIS_URL);
     redis.on('connect', function () {
         console.log('connected');
@@ -267,7 +267,7 @@ if (mode == 1) {
 
 
 
-if (mode == 0) {
+if (mode == "chat") {
     var redis = require('redis').createClient(process.env.REDIS_URL);
     redis.on('connect', function () {
         console.log('connected');
