@@ -72,7 +72,7 @@ function logrec() {
 
                     reply.match(regex).forEach(function (element) {
                         if (!(/\*{32} Chat du [0-9]{2}\/[0-9]{2}\/[0-9]{4} \*{32}\n/gmi.test(element) && /\*{32} Chat du [0-9]{2}\/[0-9]{2}\/[0-9]{4} \*{32}\n/gmi.test(s))) {
-                            str += s + newday
+                            str += s //+ newday
                         }
                         s = element
                     });
