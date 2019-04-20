@@ -109,13 +109,12 @@ function redisquit() {
             if (year0int < year1int + 1) {
                 logrec()
             } else {
-                // var tag = day0 + "/" + month0 + "/" + year0 + "-" + day1 + "/" + month1 + "/" + year1
                 var tag = dateBegin + "-" + dateEnd
                 console.log('stop');
                 if (mode == "word") {
-                    tag = word + "-" + tag
+                    tag = word + "/" + tag
                 } else if (mode == "user") {
-                    tag = user + "-" + tag
+                    tag = user + "/" + tag
                 }
                 redis.set(mode + "/" + tag, str, function (err, reply) {
                     redis.quit()
