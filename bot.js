@@ -13,6 +13,11 @@ let day1 = dateEnd.substr(0,2)
 let month1 = dateEnd.substr(3,2)
 let year1 = dateEnd.substr(6,4)
 
+console.log(dateBegin)
+console.log(dateEnd)
+console.log(day0)
+console.log(year1)
+
 day0int = parseInt(day0)
 month0int = parseInt(month0)
 year0int = parseInt(year0)
