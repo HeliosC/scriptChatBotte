@@ -1,5 +1,5 @@
 mode = process.env.mode
-let user = process.env.mode.user
+let user = process.env.user
 let word = process.env.word
 
 let day0 = process.env.dateBeginDay
