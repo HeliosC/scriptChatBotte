@@ -2,13 +2,16 @@ mode = process.env.mode
 let user = process.env.user
 let word = process.env.word
 
-let day0 = process.env.dateBeginDay
-let month0 = process.env.dateBeginMonth
-let year0 = process.env.dateBeginYear
+let dateBegin = process.env.dateBegin
+let dateEnd = process.env.dateEnd
 
-let day1 = process.env.dateEndDay
-let month1 = process.env.dateEndMonth
-let year1 = process.env.dateEndYear
+let day0 = dateBegin.substr(0,2)
+let month0 = dateBegin.substr(3,2)
+let year0 = dateBegin.substr(6,4)
+
+let day1 = dateEnd.substr(0,2)
+let month1 = dateEnd.substr(3,2)
+let year1 = dateEnd.substr(6,4)
 
 day0int = parseInt(day0)
 month0int = parseInt(month0)
@@ -101,7 +104,8 @@ function redisquit() {
             if (year0int < year1int + 1) {
                 logrec()
             } else {
-                var tag = day0 + "/" + month0 + "/" + year0 + "-" + day1 + "/" + month1 + "/" + year1
+                // var tag = day0 + "/" + month0 + "/" + year0 + "-" + day1 + "/" + month1 + "/" + year1
+                var tag = dateBegin + "-" + dateEnd
                 console.log('stop');
                 if (mode == "word") {
                     tag = word + "-" + tag
