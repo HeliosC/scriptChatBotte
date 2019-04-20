@@ -1,94 +1,65 @@
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+mode = "word"
+let user = "pouidesbois"
+let word = "chatdehi"
 
+let day0 = 'process.env.dateBeginDay'
+let month0 = 'process.env.dateBeginMonth'
+let year0 = 'process.env.dateBeginYear'
 
+let day1 = 'process.env.dateEndDay'
+let month1 = 'process.env.dateEndMonth'
+let year1 = 'process.env.dateEndYear'
 
-mode = process.env.mode
-// 0 = Update monthly chat
-// 1 = Find user's messages
-// 2 = Find a word in the chat 
+day0int = parseInt(day0)
+month0int = parseInt(month0)
+year0int = parseInt(year0)
 
+day1int = parseInt(day1)
+month1int = parseInt(month1)
+year1int = parseInt(year1)
 
-// if mode = 0, set the current month:
-let month0 = process.env.month
-let year0 =  process.env.year
+let tokenredis = process.env.REDIS_URL
 
+var redis = require('redis').createClient(tokenredis);
+redis.on('connect', function () {
+    console.log('connected');
+});
 
-// if mode = 1, set the username:
-let username = process.env.username
-
-
-// if mode = 2, set the word:
-let word = process.env.word
-
-
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-
-
-
-
-
-
-
-
+var str = ""
+var s = ""
+var regex
 
 if (mode == "word") {
-    var redis = require('redis').createClient(process.env.REDIS_URL);
-    redis.on('connect', function () {
-        console.log('connected');
-    });
+    regex = new RegExp("[0-9]{2}:[0-9]{2} \\[.+\\] : .*" + word + ".*\\n|(\\n|^)\\*{32} Chat du [0-9]{2}\\/[0-9]{2}\\/[0-9]{4} \\*{32}\\n", "gmi");
+} else if (mode == "user") {
+    regex = new RegExp("[0-9]{2}:[0-9]{2} \\[" + user + "\\] : .*\\n|(\\n|^)\\*{32} Chat du [0-9]{2}\\/[0-9]{2}\\/[0-9]{4} \\*{32}\\n", "gmi");
+}
 
-    jourint = 1
-    monthint = 4
-    yearint = 2019
+logrec(day0int)
 
-    // let dat0 = '/'+month0+'/'+year0
-    // let dat0 = year + '/' 
-    content = ''
+function logrec(day0int) {
 
-    var str = ""
-    var s = ""
-    // username = ".*" + username + ".*"
-    // var exp = "" + username + ""
-    var regex = new RegExp("[0-9]{2}:[0-9]{2} \\[.+\\] : .*" + word + ".*\\n|(\\n|^)\\*{32} Chat du [0-9]{2}\\/[0-9]{2}\\/[0-9]{4} \\*{32}\\n", "gmi");
+    if (day0int < 10) {
+        jour = '0' + day0int
+    } else {
+        jour = '' + day0int
+    }
+    if (month0int < 10) {
+        month = '0' + month0int
+    } else {
+        month = '' + month0int
+    }
+    year = '' + year0int
 
+    let dat = year + '/' + month + '/' + jour
 
-    logrec(jourint)
+    let chatredis = "chat/" + dat
+    redis.exists(chatredis, function (err, reply) {
+        if (reply === 1) {
+            // console.log(chatredis + 'exists');
+            redis.get(chatredis, function (err, reply) {
 
-    function logrec(jourint) {
-
-        if (jourint < 10) {
-            jour = '0' + jourint
-        } else {
-            jour = '' + jourint
-        }
-        if (monthint < 10) {
-            month = '0' + monthint
-        } else {
-            month = '' + monthint
-        }
-        year=''+yearint
-
-        let dat = year + '/' + month + '/' + jour
-        // let path = 'chat/' + dat.substr(6,4)+ '/' + dat.substr(3,2) + '/' + dat.substr(0,2) + '-' + dat.substr(3,2) + '-' + dat.substr(6,4) + '.txt'
-
-        // console.log(dat)
-
-        let chatredis = "chat/" + dat
-        redis.exists(chatredis, function (err, reply) {
-            if (reply === 1) {
-                // console.log(chatredis + 'exists');
-                redis.get(chatredis, function (err, reply) {
+                if (mode != "chat") {
 
                     reply.match(regex).forEach(function (element) {
                         if (!(/\*{32} Chat du [0-9]{2}\/[0-9]{2}\/[0-9]{4} \*{32}\n/gmi.test(element) && /\*{32} Chat du [0-9]{2}\/[0-9]{2}\/[0-9]{4} \*{32}\n/gmi.test(s))) {
@@ -96,239 +67,51 @@ if (mode == "word") {
                         }
                         s = element
                     });
-                    // if (!/\*{32} Chat du [0-9]{2}\/[0-9]{2}\/[0-9]{4} \*{32}\n/gmi.test(s)) {
-                    //     str += s
-                    // }
 
-                    redisquit()
+                } else {
+                    str += reply + '\n\n\n\n'
+                        + '************************************************************************************************************************************************************************\n'
+                        + '************************************************************************************************************************************************************************\n'
+                        + '************************************************************************************************************************************************************************\n'
+                        + '************************************************************************************************************************************************************************\n'
+                        + '************************************************************************************************************************************************************************\n'
 
-                });
-                if (err) throw err;
-            } else {
-                // console.log(chatredis + 'don\'t exists');
-                redisquit()
-            }
-        });
-
-
-
-    }
-
-    function redisquit() {
-        jourint += 1
-        if (jourint < 32) {
-            logrec(jourint)
-        } else {
-            monthint+=1
-            jourint=1
-            if(monthint<13){
-                logrec(jourint)
-            }else{
-                yearint+=1
-                monthint=1
-                if(yearint<2020){
-                    logrec(jourint)
-                }else{
-                    console.log('stop');
-                    redis.set("word/"+word, str, function (err, reply) {
-                        redis.quit()
-                    });
                 }
-            }
-
-        }
-    }
-}
-
-
-
-
-
-if (mode == "username") {
-    var redis = require('redis').createClient(process.env.REDIS_URL);
-    redis.on('connect', function () {
-        console.log('connected');
-    });
-
-    jourint = 1
-    monthint = 4
-    yearint = 2019
-
-    // let dat0 = '/'+month0+'/'+year0
-    // let dat0 = year + '/' 
-    content = ''
-
-    var str = ""
-    var s = ""
-    // username = ".*" + username + ".*"
-    var exp = "" + username + ""
-    var regex = new RegExp("[0-9]{2}:[0-9]{2} \\[" + username + "\\] : .*\\n|(\\n|^)\\*{32} Chat du [0-9]{2}\\/[0-9]{2}\\/[0-9]{4} \\*{32}\\n", "gmi");
-
-
-    logrec(jourint)
-
-    function logrec(jourint) {
-
-        if (jourint < 10) {
-            jour = '0' + jourint
-        } else {
-            jour = '' + jourint
-        }
-        if (monthint < 10) {
-            month = '0' + monthint
-        } else {
-            month = '' + monthint
-        }
-        year=''+yearint
-
-        let dat = year + '/' + month + '/' + jour
-        // let path = 'chat/' + dat.substr(6,4)+ '/' + dat.substr(3,2) + '/' + dat.substr(0,2) + '-' + dat.substr(3,2) + '-' + dat.substr(6,4) + '.txt'
-
-        // console.log(dat)
-
-        let chatredis = "chat/" + dat
-        redis.exists(chatredis, function (err, reply) {
-            if (reply === 1) {
-                // console.log(chatredis + 'exists');
-                redis.get(chatredis, function (err, reply) {
-
-                    reply.match(regex).forEach(function (element) {
-                        if (!(/\*{32} Chat du [0-9]{2}\/[0-9]{2}\/[0-9]{4} \*{32}\n/gmi.test(element) && /\*{32} Chat du [0-9]{2}\/[0-9]{2}\/[0-9]{4} \*{32}\n/gmi.test(s))) {
-                            str += s
-                        }
-                        s = element
-                    });
-                    if (!/\*{32} Chat du [0-9]{2}\/[0-9]{2}\/[0-9]{4} \*{32}\n/gmi.test(s)) {
-                        str += s
-                    }
-
-                    redisquit()
-
-                });
-                if (err) throw err;
-            } else {
-                // console.log(chatredis + 'don\'t exists');
                 redisquit()
-            }
-        });
-
-
-
-    }
-
-    function redisquit() {
-        jourint += 1
-        if (jourint < 32) {
-            logrec(jourint)
-        } else {
-            monthint+=1
-            jourint=1
-            if(monthint<13){
-                logrec(jourint)
-            }else{
-                yearint+=1
-                monthint=1
-                if(yearint<2020){
-                    logrec(jourint)
-                }else{
-                    console.log('stop');
-                    redis.set("user/"+username, str, function (err, reply) {
-                        redis.quit()
-                    });
-                }
-            }
-
-        }
-    }
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-if (mode == "chat") {
-    var redis = require('redis').createClient(process.env.REDIS_URL);
-    redis.on('connect', function () {
-        console.log('connected');
-    });
-
-
-    // let dat0 = '/'+month0+'/'+year0
-    let dat0 = year0 + '/' + month0 + '/'
-    content = ''
-    jourint = 1
-
-    logrec(jourint)
-
-    function logrec(jourint) {
-
-        if (jourint < 10) {
-            jour = '0' + jourint
-        } else {
-            jour = '' + jourint
-        }
-
-        let dat = dat0 + jour
-        // let path = 'chat/' + dat.substr(6,4)+ '/' + dat.substr(3,2) + '/' + dat.substr(0,2) + '-' + dat.substr(3,2) + '-' + dat.substr(6,4) + '.txt'
-
-
-        let chatredis = "chat/" + dat
-        redis.exists(chatredis, function (err, reply) {
-            if (reply === 1) {
-                // console.log(chatredis + 'exists');
-                redis.get(chatredis, function (err, reply) {
-                    content += reply + '\n\n\n\n'
-                        + '************************************************************************************************************************************************************************\n'
-                        + '************************************************************************************************************************************************************************\n'
-                        + '************************************************************************************************************************************************************************\n'
-                        + '************************************************************************************************************************************************************************\n'
-                        + '************************************************************************************************************************************************************************\n'
-
-
-                    redisquit()
-
-                });
-                if (err) throw err;
-            } else {
-                // console.log(chatredis + 'don\'t exists');
-                redisquit()
-            }
-        });
-
-
-
-    }
-
-    function redisquit() {
-        jourint += 1
-        if (jourint < 32) {
-            logrec(jourint)
-        } else {
-            console.log('stop');
-            redis.set("chat/" + dat0 + "00", content, function (err, reply) {
-                redis.quit()
             });
+            if (err) throw err;
+        } else {
+            redisquit()
+        }
+    });
+}
+
+function redisquit() {
+    day0int += 1
+    if (day0int < day1int + 1) {
+        logrec(day0int)
+    } else {
+        month0int += 1
+        day0int = 1
+        if (month0int < month1int + 1) {
+            logrec(day0int)
+        } else {
+            year0int += 1
+            month0int = 1
+            if (year0int < year1int + 1) {
+                logrec(day0int)
+            } else {
+                var tag = day0 + "/" + month0 + "/" + year0 + "-" + day1 + "/" + month1 + "/" + year1
+                console.log('stop');
+                if (mode == "word") {
+                    tag = word + "-" + tag
+                } else if (mode == "user") {
+                    tag = user + "-" + tag
+                }
+                redis.set(mode + "/" + tag, str, function (err, reply) {
+                    redis.quit()
+                });
+            }
         }
     }
 }
