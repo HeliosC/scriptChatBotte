@@ -1,6 +1,6 @@
-mode = "word"
-let user = "pouidesbois"
-let word = "chatdehi"
+mode = proocess.env.mode
+let user = proocess.env.mode.user
+let word = proocess.env.word
 
 let day0 = process.env.dateBeginDay
 let month0 = process.env.dateBeginMonth
