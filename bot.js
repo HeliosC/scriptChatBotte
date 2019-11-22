@@ -2,8 +2,15 @@ mode = process.env.mode
 let user = process.env.user
 let word = process.env.word
 
+// mode="user"
+// user="policedesbois"
+// word = "elo($| |\\?)"
+
 let dateBegin = process.env.dateBegin
 let dateEnd = process.env.dateEnd
+
+// dateBegin = "17/09/2019"
+// dateEnd = "18/09/2019"
 
 let day0 = dateBegin.substr(0, 2)
 let month0 = dateBegin.substr(3, 2)
