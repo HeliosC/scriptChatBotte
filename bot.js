@@ -122,7 +122,7 @@ if (process.env.On == 1) {
                     } else if (mode == "chat") {
                         tag = "custom-chat/" + tag
                     }
-                    redis.set(tag, str, function (err, reply) {
+                    redis.set(tag, str+s, function (err, reply) {
                         redis.quit()
                     });
                 }
