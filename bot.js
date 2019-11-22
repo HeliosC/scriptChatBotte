@@ -73,7 +73,7 @@ if (process.env.On == 1) {
         let chatredis = "chat/" + dat
         redis.exists(chatredis, function (err, reply) {
             if (reply === 1) {
-                console.log(chatredis + 'exists');
+                //console.log(chatredis + 'exists');
                 redis.get(chatredis, function (err, reply) {
 
                     if (mode != "chat") {
